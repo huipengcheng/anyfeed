@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [main, dev]
+    branches: [dev]
     tags: ["v*"]
   workflow_dispatch: {}
 
@@ -28,10 +28,6 @@ jobs:
           elif [[ "${{ github.ref }}" == refs/heads/dev ]]; then
             DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:dev"
             ACR_TAGS="${{ env.ACR_IMAGE }}:dev"
-          else
-            SHA="$(echo ${{ github.sha }} | cut -c1-7)"
-            DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:${SHA},${{ env.DOCKERHUB_IMAGE }}:latest"
-            ACR_TAGS="${{ env.ACR_IMAGE }}:${SHA},${{ env.ACR_IMAGE }}:latest"
           fi
           echo "tags=${DOCKERHUB_TAGS},${ACR_TAGS}" >> "$GITHUB_OUTPUT"
 
