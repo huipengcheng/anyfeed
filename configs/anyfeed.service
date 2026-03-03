@@ -1,0 +1,34 @@
+[Unit]
+Description=Anyfeed RSS Aggregation Service
+Documentation=https://github.com/huipeng/anyfeed
+After=network.target
+
+[Service]
+Type=simple
+User=anyfeed
+Group=anyfeed
+ExecStart=/usr/local/bin/anyfeed --config /etc/anyfeed/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=10
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/anyfeed
+
+# Working directory
+WorkingDirectory=/var/lib/anyfeed
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=anyfeed
+
+# Resource limits
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
