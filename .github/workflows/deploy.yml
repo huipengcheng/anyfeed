@@ -7,7 +7,9 @@ on:
   workflow_dispatch: {}
 
 env:
-  IMAGE_NAME: huipengcheng/anyfeed
+  DOCKERHUB_IMAGE: huipengcheng/anyfeed
+  ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  ACR_IMAGE: registry.cn-hangzhou.aliyuncs.com/${{ secrets.ACR_NAMESPACE }}/anyfeed
 
 jobs:
   build-and-push:
@@ -20,19 +22,27 @@ jobs:
         id: meta
         run: |
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            # Tag push: build versioned image + update latest
             VERSION="${{ github.ref_name }}"
-            echo "tags=${{ env.IMAGE_NAME }}:${VERSION},${{ env.IMAGE_NAME }}:latest" >> "$GITHUB_OUTPUT"
+            DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:${VERSION},${{ env.DOCKERHUB_IMAGE }}:latest"
+            ACR_TAGS="${{ env.ACR_IMAGE }}:${VERSION},${{ env.ACR_IMAGE }}:latest"
           else
-            # Branch push: build dev image only
-            echo "tags=${{ env.IMAGE_NAME }}:dev" >> "$GITHUB_OUTPUT"
+            DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:dev"
+            ACR_TAGS="${{ env.ACR_IMAGE }}:dev"
           fi
+          echo "tags=${DOCKERHUB_TAGS},${ACR_TAGS}" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to Alibaba Cloud ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ACR_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
