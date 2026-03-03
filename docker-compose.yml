@@ -1,6 +1,6 @@
 services:
   anyfeed:
-    image: ${REGISTRY_URL}/anyfeed:${IMAGE_TAG:-latest}
+    image: docker.io/huipengcheng/anyfeed:${IMAGE_TAG:-latest}
     container_name: anyfeed
     restart: unless-stopped
     ports:
