@@ -2,6 +2,7 @@ name: Deploy
 
 on:
   push:
+    branches: [main]
     tags: ["v*"]
   workflow_dispatch: {}
 
@@ -12,21 +13,20 @@ jobs:
   build-and-push:
     name: Build & Push Image
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.meta.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine image tag
+      - name: Determine image tags
         id: meta
         run: |
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            TAG="${{ github.ref_name }}"
+            # Tag push: build versioned image + update latest
+            VERSION="${{ github.ref_name }}"
+            echo "tags=${{ env.IMAGE_NAME }}:${VERSION},${{ env.IMAGE_NAME }}:latest" >> "$GITHUB_OUTPUT"
           else
-            TAG="$(echo ${{ github.sha }} | cut -c1-7)"
+            # Branch push: build dev image only
+            echo "tags=${{ env.IMAGE_NAME }}:dev" >> "$GITHUB_OUTPUT"
           fi
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "image=${{ env.IMAGE_NAME }}:${TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -42,10 +42,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ steps.meta.outputs.image }}
-            ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-
