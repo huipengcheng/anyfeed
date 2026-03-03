@@ -4,7 +4,7 @@
 
 **Subscribe to anything.**
 
-Turn any website, API, or data source into an RSS feed — in seconds.
+Turn anything into an RSS feed — in seconds.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Self-hostable](https://img.shields.io/badge/self--hostable-yes-green)]()
