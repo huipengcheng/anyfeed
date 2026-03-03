@@ -182,6 +182,8 @@ from:*@example.com,subject:*weekly*  # Multiple conditions (AND)
 
 ## Deployment
 
+Supports Docker Compose deployment. See `docker-compose.yml` for reference.
+
 ### Using systemd
 
 1. Copy the binary to `/usr/local/bin/`
@@ -191,21 +193,6 @@ from:*@example.com,subject:*weekly*  # Multiple conditions (AND)
 5. Create user: `useradd -r -s /bin/false anyfeed`
 6. Set permissions: `chown -R anyfeed:anyfeed /var/lib/anyfeed`
 7. Enable and start: `systemctl enable --now anyfeed`
-
-### Using Docker
-
-```dockerfile
-FROM golang:1.22-alpine AS builder
-WORKDIR /app
-COPY . .
-RUN go build -o anyfeed ./cmd/anyfeed
-
-FROM alpine:latest
-COPY --from=builder /app/anyfeed /usr/local/bin/
-COPY configs/example.yaml /etc/anyfeed/config.yaml
-EXPOSE 8080 2525
-CMD ["anyfeed", "--config", "/etc/anyfeed/config.yaml"]
-```
 
 ## Development
 
