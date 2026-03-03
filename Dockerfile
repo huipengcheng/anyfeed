@@ -21,13 +21,18 @@ FROM alpine:3.19
 WORKDIR /app
 
 # Install runtime dependencies
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata wget \
+    && addgroup -S anyfeed \
+    && adduser -S -G anyfeed anyfeed
 
 # Copy binary
 COPY --from=builder /app/build/anyfeed /app/anyfeed
 
 # Create directories for data and config
-RUN mkdir -p /app/data /app/configs
+RUN mkdir -p /app/data /app/configs \
+    && chown -R anyfeed:anyfeed /app
+
+USER anyfeed
 
 EXPOSE 8080 2525
 
