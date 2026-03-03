@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [dev]
+    branches: [main]
     tags: ["v*"]
   workflow_dispatch: {}
 
@@ -25,7 +25,7 @@ jobs:
             VERSION="${{ github.ref_name }}"
             DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:${VERSION},${{ env.DOCKERHUB_IMAGE }}:latest"
             ACR_TAGS="${{ env.ACR_IMAGE }}:${VERSION},${{ env.ACR_IMAGE }}:latest"
-          elif [[ "${{ github.ref }}" == refs/heads/dev ]]; then
+          elif [[ "${{ github.ref }}" == refs/heads/main ]]; then
             DOCKERHUB_TAGS="${{ env.DOCKERHUB_IMAGE }}:dev"
             ACR_TAGS="${{ env.ACR_IMAGE }}:dev"
           fi
