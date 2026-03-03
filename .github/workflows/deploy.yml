@@ -8,8 +8,8 @@ on:
 
 env:
   DOCKERHUB_IMAGE: huipengcheng/anyfeed
-  ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
-  ACR_IMAGE: registry.cn-hangzhou.aliyuncs.com/${{ secrets.ACR_NAMESPACE }}/anyfeed
+  ACR_REGISTRY: ${{ secrets.ACR_REGISTRY }}
+  ACR_IMAGE: ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/anyfeed
 
 jobs:
   build-and-push:
