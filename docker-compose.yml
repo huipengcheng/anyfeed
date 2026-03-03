@@ -1,6 +1,6 @@
 services:
   anyfeed:
-    image: ${IMAGE_REGISTRY:-huipengcheng}/anyfeed:${IMAGE_TAG:-latest}
+    image: ${IMAGE:-huipengcheng/anyfeed}:${IMAGE_TAG:-latest}
     container_name: anyfeed
     restart: unless-stopped
     ports:

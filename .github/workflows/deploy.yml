@@ -9,7 +9,7 @@ on:
 env:
   DOCKERHUB_IMAGE: huipengcheng/anyfeed
   ACR_REGISTRY: ${{ secrets.ACR_REGISTRY }}
-  ACR_IMAGE: ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/anyfeed
+  ACR_IMAGE: ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}
 
 jobs:
   build-and-push:
