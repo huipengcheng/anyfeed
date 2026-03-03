@@ -1,0 +1,98 @@
+# Anyfeed Configuration Example
+# Complete example with all options documented
+
+# Server settings
+server:
+  # HTTP server port (default: 8080)
+  port: 8080
+  
+  # SMTP server port for email receiving (default: 2525)
+  smtp_port: 2525
+  
+  # API key for feed access authentication (optional)
+  # If not set, feeds are publicly accessible
+  api_key: "your-secret-api-key"
+
+# Storage settings
+storage:
+  # SQLite database file path (default: ./anyfeed.db)
+  path: "./data/anyfeed.db"
+  
+  # Maximum items to keep per feed (default: 1000)
+  max_items_per_feed: 1000
+
+# Feed sources
+feeds:
+  # RSS/Atom feed example (Active - scheduled fetching)
+  - name: "tech-news"
+    type: rss
+    url: "https://hnrss.org/frontpage"
+    interval: 30m  # Fetch interval (supports: s, m, h)
+    tags: ["tech", "news"]
+    enabled: true
+  
+  # Another RSS example
+  - name: "golang-blog"
+    type: rss
+    url: "https://go.dev/blog/feed.atom"
+    interval: 1h
+    tags: ["tech", "golang"]
+    enabled: true
+  
+  # Email subscription example (Passive - SMTP receives)
+  # When enabled, the SMTP server will accept emails matching this rule
+  - name: "newsletter"
+    type: email
+    match: "from:*@newsletter.com"  # Email filter expression
+    tags: ["newsletter"]
+    enabled: false  # Disabled by default, enable when you set up SMTP
+  
+  # Web change monitoring example (Active - scheduled fetching)
+  - name: "product-updates"
+    type: web
+    url: "https://example.com/changelog"
+    selector: ".changelog-list"  # CSS selector for content
+    interval: 1h
+    tags: ["product"]
+    enabled: false  # Example, set your own URL
+
+# Output endpoints
+# Each endpoint generates an RSS feed with optional filtering
+output:
+  # Aggregate all feeds
+  - path: "/feed/all"
+    title: "All Feeds"
+    description: "Aggregated feed from all sources"
+    limit: 100
+  
+  # Filter by source names
+  - path: "/feed/tech"
+    title: "Tech News"
+    description: "Technical news and updates"
+    sources: ["tech-news", "golang-blog"]
+    limit: 50
+  
+  # Filter by tags
+  - path: "/feed/newsletters"
+    title: "Newsletters"
+    description: "Email newsletters"
+    tags: ["newsletter"]
+    limit: 50
+
+# Email Match Expression Syntax Reference:
+# ----------------------------------------
+# Supported match expressions:
+#
+# Match by sender:
+#   from:user@example.com
+#   from:*@example.com           # Wildcard matching
+#
+# Match by recipient:
+#   to:rss@yourdomain.com
+#
+# Match by subject:
+#   subject:*Newsletter*         # Contains "Newsletter"
+#   subject:Weekly Update        # Exact match
+#
+# Combine with AND (comma):
+#   from:*@newsletter.com,subject:*weekly*
