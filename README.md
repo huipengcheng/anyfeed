@@ -182,17 +182,52 @@ from:*@example.com,subject:*weekly*  # Multiple conditions (AND)
 
 ## Deployment
 
-Supports Docker Compose deployment. See `docker-compose.yml` for reference.
+### Docker Compose
 
-### Using systemd
+```yaml
+services:
+  anyfeed:
+    image: huipengcheng/anyfeed:latest
+    container_name: anyfeed
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "2525:2525"
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/configs/config.yaml:ro
+    environment:
+      - TZ=Asia/Shanghai
+```
 
-1. Copy the binary to `/usr/local/bin/`
-2. Create configuration at `/etc/anyfeed/config.yaml`
-3. Create data directory: `mkdir -p /var/lib/anyfeed`
-4. Copy the service file: `cp configs/anyfeed.service /etc/systemd/system/`
-5. Create user: `useradd -r -s /bin/false anyfeed`
-6. Set permissions: `chown -R anyfeed:anyfeed /var/lib/anyfeed`
-7. Enable and start: `systemctl enable --now anyfeed`
+### systemd
+
+1. Copy the binary and service file:
+```bash
+cp build/anyfeed /usr/local/bin/
+cp configs/anyfeed.service /etc/systemd/system/
+```
+
+2. Create user and directories:
+```bash
+useradd -r -s /bin/false anyfeed
+mkdir -p /etc/anyfeed /var/lib/anyfeed
+chown -R anyfeed:anyfeed /var/lib/anyfeed
+```
+
+3. Create config at `/etc/anyfeed/config.yaml` and start:
+```bash
+systemctl enable --now anyfeed
+```
+
+### Binary
+
+Download pre-built binary from [Releases](https://github.com/huipeng/anyfeed/releases) or build from source:
+
+```bash
+make build
+./build/anyfeed --config config.yaml
+```
 
 ## Development
 
